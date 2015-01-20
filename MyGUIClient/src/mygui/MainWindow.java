@@ -34,9 +34,9 @@ import javax.swing.JOptionPane;
 
 public class MainWindow {
 
-	private JFrame frmTechTester; // test comment
+	private JFrame frmTechTester; // test comment 1
 	JTextPane textPane1;
-	JTextPane textPane2;
+	JTextPane textPane2;          // test comment 2
 	private JTable table1;
 	JTextPane textPaneReceived;
 	

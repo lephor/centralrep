@@ -3,7 +3,6 @@
 	<name>MyServletJSPProj</name>
 	<comment></comment>
 	<projects>
-		<project>MyEJBClient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
