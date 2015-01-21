@@ -36,7 +36,7 @@ public class MainWindow {
 
 	private JFrame frmTechTester; // test comment 1
 	JTextPane textPane1;
-	JTextPane textPane2;          // test comment 2
+	JTextPane textPane2;          // test comment 2 3
 	private JTable table1;
 	JTextPane textPaneReceived;
 	
