@@ -110,7 +110,7 @@ public class MainWindow {
 				    {
 				      Properties p=new Properties();
 				      p.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
-				      p.put(Context.PROVIDER_URL,"t3://localhost:7001"); //"t3://192.168.1.25:7001" "t3://localhost:7001"
+				      p.put(Context.PROVIDER_URL,"t3://192.168.1.25:7001"); //"t3://192.168.1.25:7001" "t3://localhost:7001"
 				      InitialContext ctx=new InitialContext(p);
 				      rifs=(MyBEanRemote)ctx.lookup("java:global.MyWLSApp.MyEJBProj.MyBEan!myBeans.MyBEanRemote");
 				      textPane1.setText(textPane1.getText() + "\r\n" + rifs.Hello("ejb client"));
