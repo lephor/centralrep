@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/MyEJBProj/build/MyEJBProj.jar"/>
 	<classpathentry kind="var" path="MIDDLEWARE_WL/Oracle_Home/wlserver/server/lib/weblogic.jar"/>
 	<classpathentry kind="var" path="MIDDLEWARE_WL/Oracle_Home/oracle_common/modules/oracle.jdbc_12.1.0/ojdbc6.jar"/>
+	<classpathentry kind="var" path="MIDDLEWARE_WL"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

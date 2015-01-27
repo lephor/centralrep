@@ -2,6 +2,7 @@ package mygui;
 
 import java.io.*;
 import java.util.Hashtable;
+
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueConnection;
@@ -17,10 +18,12 @@ import javax.naming.NamingException;
 public class myJMSClient {
 
 	
-	public final static String URL ="t3://192.168.1.25:7001";
+
 	public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
-	public final static String JMS_FACTORY="MyJMSConnectionFactory";
-	public final static String QUEUE="MyJMSQueue";
+	
+	public String URL;
+	public String JMS_FACTORY;
+	public String QUEUE;
 	
 	private QueueConnectionFactory qconFactory;
 	private QueueConnection qcon;
@@ -30,10 +33,13 @@ public class myJMSClient {
 	private TextMessage msg;
 	
 	
-	public myJMSClient() throws Exception
+	public myJMSClient(String in_url, String in_queue, String in_jms_factory) throws Exception
 	{
 
-
+		URL = in_url;
+		JMS_FACTORY = in_jms_factory;
+		QUEUE = in_queue;
+		
 		InitialContext ic = getInitialContext(URL);
 		init(ic, QUEUE);
 		//readAndSend();

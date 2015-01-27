@@ -12,9 +12,10 @@ public class JDBC_Exec {
 	
 	public Connection connection;
 	public Statement stmt;
-	public ResultSet rs;
+	public ResultSet rs;	
 	
-	public JDBC_Exec(String fork) throws ClassNotFoundException, SQLException // test git comment
+	
+	public JDBC_Exec(String in_conn_pool, String WLS_URL, String direct_url, String fork) throws ClassNotFoundException, SQLException // test git comment
 	{
 		switch (fork)
 		{
@@ -24,10 +25,10 @@ public class JDBC_Exec {
 			Context ctx = null;
 		    Hashtable ht = new Hashtable();
 		    ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		    ht.put(Context.PROVIDER_URL, "t3://192.168.1.25:7001");
+		    ht.put(Context.PROVIDER_URL, "t3://"+WLS_URL);
 			
 		    ctx = new InitialContext(ht);
-		    javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("JMS-JDBC-Data-Source-0");
+		    javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup (in_conn_pool);
 		    connection = ds.getConnection();
 			}
 			catch (Exception e)
@@ -38,7 +39,7 @@ public class JDBC_Exec {
 			break;
 		default:
 			Class.forName("oracle.jdbc.driver.OracleDriver");  
-			connection=DriverManager.getConnection("jdbc:oracle:thin:@192.168.1.25:1522:orc","SYSTEM","oracle"); 
+			connection=DriverManager.getConnection("jdbc:oracle:thin:@"+direct_url,"SYSTEM","oracle"); 
 			System.out.println("direct");
 		}
 	}
@@ -59,27 +60,6 @@ public class JDBC_Exec {
 		return new ResultSetTableModel(r);
 	}
 	
-	public void CreateConnection()
-	{
-		try
-			{  
-			//step1 load the driver class  
 
-			  
-			//step3 create the statement object  
-			stmt=connection.createStatement();  
-			  
-			//step4 execute query  
-			rs=stmt.executeQuery("select * from scott.emp");  
-			while(rs.next())  
-			System.out.println(rs.getInt(1)+"  "+rs.getString(2)+"  "+rs.getString(3));  
-			  
-			//step5 close the connection object  
-			connection.close();  
-			  
-			}
-		catch(Exception e)
-		{ System.out.println(e);}  
-	}
 
 }

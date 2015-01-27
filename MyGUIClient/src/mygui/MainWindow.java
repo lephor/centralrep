@@ -4,6 +4,7 @@ import java.awt.EventQueue;
 
 
 
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.swing.JFrame;
@@ -25,12 +26,22 @@ import java.awt.event.ActionEvent;
 import java.util.Properties;
 
 import myWebServices.*;
+
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
+
 import javax.swing.JOptionPane;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 public class MainWindow {
 
@@ -45,6 +56,14 @@ public class MainWindow {
 	MyJMSListener jmslistner;
 	MyWebServiceProxy proxy;
 	JDBC_Exec jdbc_point;
+	private JTextField txtWlsurl;
+	private JTextField txtConnFact;
+	private JTextField txtQueue;
+	private JTextField txtOracleurl;
+	private JTextField txtSQL;
+	private JTextField txtConnPool;
+	
+	Properties appSettings = null; 
 	
 	
 	
@@ -69,9 +88,35 @@ public class MainWindow {
 	 */
 	public MainWindow() {
 		initialize();
+		
+		try {
+			appSettings = new Properties();
+			InputStream input = null;
+			input =  new FileInputStream("techtester.properties.xml");	 
+			// load a properties file
+			appSettings.loadFromXML(input);
+			
+			txtWlsurl.setText(appSettings.getProperty("Wlsurl"));
+			txtConnFact.setText(appSettings.getProperty("ConnFact"));
+			txtQueue.setText(appSettings.getProperty("Queue"));
+			txtOracleurl.setText(appSettings.getProperty("Oracleurl"));
+			txtSQL.setText(appSettings.getProperty("SQL"));
+			txtConnPool.setText(appSettings.getProperty("ConnPool"));
+			
+			input.close();
+			
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 		try
 		{
-			jmslistner = new MyJMSListener(textPaneReceived);
+			jmslistner = new MyJMSListener("t3://" + appSettings.getProperty("Wlsurl"), appSettings.getProperty("Queue"), appSettings.getProperty("ConnFact"), textPaneReceived);
 		}
 		catch (Exception e)
 		{
@@ -110,7 +155,7 @@ public class MainWindow {
 				    {
 				      Properties p=new Properties();
 				      p.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
-				      p.put(Context.PROVIDER_URL,"t3://192.168.1.25:7001"); //"t3://192.168.1.25:7001" "t3://localhost:7001"
+				      p.put(Context.PROVIDER_URL,"t3://" + appSettings.getProperty("Wlsurl")); //"t3://192.168.1.25:7001" "t3://localhost:7001"
 				      InitialContext ctx=new InitialContext(p);
 				      rifs=(MyBEanRemote)ctx.lookup("java:global.MyWLSApp.MyEJBProj.MyBEan!myBeans.MyBEanRemote");
 				      textPane1.setText(textPane1.getText() + "\r\n" + rifs.Hello("ejb client"));
@@ -148,7 +193,7 @@ public class MainWindow {
 				/////////
 				
 				proxy = new MyWebServiceProxy();
-				proxy.setEndpoint("http://192.168.1.25:7001/MyWebServicesProj/MyWebServiceService");
+				proxy.setEndpoint("http://" +  appSettings.getProperty("Wlsurl") + "/MyWebServicesProj/MyWebServiceService");
 				
 				try
 				{
@@ -157,6 +202,8 @@ public class MainWindow {
 				catch (Exception e)
 				{
 					textPane2.setText(textPane2.getText() + "\r\n" + e.getMessage());
+					textPane2.setText(textPane2.getText() + "\r\n" + "http://" +  appSettings.getProperty("Wlsurl") + "/MyWebServicesProj/MyWebServiceService" + " failed");
+					
 				}
 				
 				/////////
@@ -203,12 +250,13 @@ public class MainWindow {
 				if (textPaneSent.getText().isEmpty())
 				{
 					JOptionPane.showMessageDialog(null, "Text to send cannot be empty", "InfoBox: " + "Action required", JOptionPane.INFORMATION_MESSAGE);
+					
 				}
 				else
 				{
 					try
-					{
-						jmscli = new myJMSClient(); 
+					{						
+						jmscli = new myJMSClient("t3://" + appSettings.getProperty("Wlsurl"), appSettings.getProperty("Queue"), appSettings.getProperty("ConnFact")); 
 						jmscli.send(textPaneSent.getText());
 						jmscli.close();
 					}
@@ -248,8 +296,8 @@ public class MainWindow {
 			{
 				try
 				{
-				jdbc_point = new JDBC_Exec("direct");
-				table1.setModel(jdbc_point.getResultSetTableModel("select * from scott.emp"));
+				jdbc_point = new JDBC_Exec(appSettings.getProperty("ConnPool"),appSettings.getProperty("Wlsurl"),appSettings.getProperty("Oracleurl"), "direct");
+				table1.setModel(jdbc_point.getResultSetTableModel(appSettings.getProperty("SQL")));
 				}
 				catch (Exception e)
 				{
@@ -269,8 +317,8 @@ public class MainWindow {
 				///////////////////
 				try
 				{
-				jdbc_point = new JDBC_Exec("connection_pool");
-				table1.setModel(jdbc_point.getResultSetTableModel("select * from scott.emp"));
+				jdbc_point = new JDBC_Exec(appSettings.getProperty("ConnPool"),appSettings.getProperty("Wlsurl"),appSettings.getProperty("Oracleurl"), "connection_pool");
+				table1.setModel(jdbc_point.getResultSetTableModel(appSettings.getProperty("SQL")));
 				}
 				catch (Exception e)
 				{
@@ -291,6 +339,97 @@ public class MainWindow {
 		
 		JPanel panel_4 = new JPanel();
 		tabbedPane.addTab("Threads", null, panel_4, null);
+		
+		JPanel panel_5 = new JPanel();
+		tabbedPane.addTab("Config", null, panel_5, null);
+		panel_5.setLayout(null);
+		
+		JLabel lblWlsAddresseg = new JLabel("WLS url (e.g. 192.168.1.25:7001)");
+		lblWlsAddresseg.setBounds(43, 48, 240, 14);
+		panel_5.add(lblWlsAddresseg);
+		
+		JLabel lblOracle = new JLabel("Oracle url (e.g. 192.168.1.25:1522:orc)");
+		lblOracle.setBounds(44, 149, 211, 14);
+		panel_5.add(lblOracle);
+		
+		JLabel lblSqlSelectStatemet = new JLabel("SQL Select statement");
+		lblSqlSelectStatemet.setBounds(44, 174, 195, 14);
+		panel_5.add(lblSqlSelectStatemet);
+		
+		JLabel lblNewLabel = new JLabel("JMS Connection factory");
+		lblNewLabel.setBounds(43, 73, 196, 14);
+		panel_5.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("JMS Queue");
+		lblNewLabel_1.setBounds(43, 98, 136, 14);
+		panel_5.add(lblNewLabel_1);
+		
+		txtWlsurl = new JTextField();
+		txtWlsurl.setBounds(276, 45, 211, 20);
+		panel_5.add(txtWlsurl);
+		txtWlsurl.setColumns(10);
+		
+		txtConnFact = new JTextField();
+		txtConnFact.setColumns(10);
+		txtConnFact.setBounds(276, 73, 211, 20);
+		panel_5.add(txtConnFact);
+		
+		txtQueue = new JTextField();
+		txtQueue.setColumns(10);
+		txtQueue.setBounds(276, 98, 211, 20);
+		panel_5.add(txtQueue);
+		
+		txtOracleurl = new JTextField();
+		txtOracleurl.setColumns(10);
+		txtOracleurl.setBounds(276, 146, 211, 20);
+		panel_5.add(txtOracleurl);
+		
+		txtSQL = new JTextField();
+		txtSQL.setColumns(10);
+		txtSQL.setBounds(276, 171, 211, 20);
+		panel_5.add(txtSQL);
+		
+		JLabel lblWlsoracleConnectionPool = new JLabel("WLS-Oracle Connection Pool");
+		lblWlsoracleConnectionPool.setBounds(43, 199, 196, 14);
+		panel_5.add(lblWlsoracleConnectionPool);
+		
+		txtConnPool = new JTextField();
+		txtConnPool.setBounds(276, 196, 211, 20);
+		panel_5.add(txtConnPool);
+		txtConnPool.setColumns(10);
+		
+		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				////////////////////////
+				
+				try {
+					OutputStream output = new FileOutputStream("techtester.properties.xml")	;
+					
+					appSettings.setProperty("Wlsurl", txtWlsurl.getText()); 
+					appSettings.setProperty("ConnFact",txtConnFact.getText());
+					appSettings.setProperty("Queue",txtQueue.getText());
+					appSettings.setProperty("Oracleurl",txtOracleurl.getText());
+					appSettings.setProperty("SQL",txtSQL.getText());
+					appSettings.setProperty("ConnPool",txtConnPool.getText());
+					
+					appSettings.storeToXML(output, "TechTester Settings");
+					
+					output.close();
+					
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				////////////////////////
+				
+			}
+		});
+		btnSave.setBounds(43, 254, 89, 23);
+		panel_5.add(btnSave);
 		
 
 	}

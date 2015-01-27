@@ -6,31 +6,37 @@ import javax.jms.*;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import javax.swing.JTextPane;
 
 public class MyJMSListener implements MessageListener {
 
 	
-	public final static String URL ="t3://192.168.1.25:7001";
-	public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
-	public final static String JMS_FACTORY="MyJMSConnectionFactory";
-	public final static String QUEUE="MyJMSQueue";
+	
+	public static final String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+	
+	public String URL;
+	public String JMS_FACTORY;
+	public String QUEUE;
 	
 	private QueueConnectionFactory qconFactory;
 	private QueueConnection qcon;
 	private QueueSession qsession;
 	private QueueReceiver qreceiver;
 	private Queue queue;
-	private boolean quit = false;
+
 	
 	JTextPane txtpane;
 	
 	
-	public MyJMSListener(JTextPane txtp) throws Exception
+	public MyJMSListener(String in_url, String in_queue, String in_jms_factory, JTextPane txtp) throws Exception
 	{
 
 		txtpane = txtp;
+
+		URL = in_url;
+		JMS_FACTORY = in_jms_factory;
+		QUEUE = in_queue;
+		
 		InitialContext ic = getInitialContext(URL);
 
 		init(ic, QUEUE);
@@ -43,8 +49,6 @@ public class MyJMSListener implements MessageListener {
 
 	}
 	
-
-
 
 	public void onMessage(Message msg)
 	{
