@@ -25,7 +25,7 @@ public class JDBC_Exec {
 			Context ctx = null;
 		    Hashtable ht = new Hashtable();
 		    ht.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
-		    ht.put(Context.PROVIDER_URL, "t3://"+WLS_URL);
+		    ht.put(Context.PROVIDER_URL, "t3://" + WLS_URL);
 			
 		    ctx = new InitialContext(ht);
 		    javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup (in_conn_pool);
@@ -49,7 +49,7 @@ public class JDBC_Exec {
 		if (connection == null)
 		    throw new IllegalStateException("Connection already closed.");
 
-		// Create a Statement object that will be used to excecute the query.
+		// Create a Statement object that will be used to execute the query.
 		// The arguments specify that the returned ResultSet will be 
 		// scrollable, read-only, and insensitive to changes in the db.
 		Statement statement =
