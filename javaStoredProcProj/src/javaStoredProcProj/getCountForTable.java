@@ -1,12 +1,12 @@
 package javaStoredProcProj;
 
 import java.sql.*;
-
-//import oracle.jdbc.*;
+import java.io.*;
+import oracle.jdbc.*;
 
 public class getCountForTable {
 
-   //Add an employee to the database.
+
    public static String getCount(String table_name)
    {
 	  String output = "";
@@ -38,3 +38,29 @@ public class getCountForTable {
          }
    }
 }
+
+
+/*
+
+java name "getCount" by source upload
+
+CREATE OR REPLACE FUNCTION getCountForTablegetCount (table_name VARCHAR2)
+   RETURN VARCHAR2 AS LANGUAGE JAVA
+   NAME 'javaStoredProcProj.getCountForTable.getCount(String) return String';
+
+
+drop java class getCountForTable
+drop java source GETCOUNTFORTABLE
+
+DECLARE
+  EMP_NO VARCHAR2(200);
+
+ BEGIN
+  EMP_NO:= GETCOUNTFORTABLEGETCOUNT('emp.scott');
+  DBMS_OUTPUT.PUT_LINE(EMP_NO);
+ END;
+
+*/
+
+
+
