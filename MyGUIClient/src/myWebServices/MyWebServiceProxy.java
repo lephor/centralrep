@@ -50,5 +50,11 @@ public class MyWebServiceProxy implements myWebServices.MyWebService {
     return myWebService.add(arg0, arg1);
   }
   
+  public String getCount(String arg0, String arg1) throws java.rmi.RemoteException{
+	    if (myWebService == null)
+	      _initMyWebServiceProxy();
+	    return myWebService.getCount(arg0, arg1);
+	  }
+  
   
 }

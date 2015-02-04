@@ -28,7 +28,7 @@ public class getCountForTable {
  		 
  		 statement.close();
  		 
- 		 return table_name + "'s count = " + output + " from javaSP";
+ 		 return table_name + "'s count = " + output + " <- from javaSP ";
          
          }
       catch(SQLException e) {
@@ -56,9 +56,11 @@ DECLARE
   EMP_NO VARCHAR2(200);
 
  BEGIN
-  EMP_NO:= GETCOUNTFORTABLEGETCOUNT('emp.scott');
+  EMP_NO:= GETCOUNTFORTABLEGETCOUNT('scott.emp');
   DBMS_OUTPUT.PUT_LINE(EMP_NO);
  END;
+ 
+ select GETCOUNTFORTABLEGETCOUNT('scott.emp') from dual;
 
 */
 

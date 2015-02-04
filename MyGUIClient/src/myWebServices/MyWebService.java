@@ -8,5 +8,6 @@
 package myWebServices;
 
 public interface MyWebService extends java.rmi.Remote {
+    public java.lang.String getCount(java.lang.String arg0, java.lang.String arg1) throws java.rmi.RemoteException;
     public int add(int arg0, int arg1) throws java.rmi.RemoteException;
 }

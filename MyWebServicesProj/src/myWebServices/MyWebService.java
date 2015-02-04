@@ -9,4 +9,7 @@ public interface MyWebService {
 	
 	@WebMethod(operationName = "add")
 	public int add(int p1, int p2);
+	
+	@WebMethod(operationName = "getCount")
+	public String getCount(String connPool, String table);
 }

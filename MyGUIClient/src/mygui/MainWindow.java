@@ -56,12 +56,17 @@ public class MainWindow {
 	MyJMSListener jmslistner;
 	MyWebServiceProxy proxy;
 	JDBC_Exec jdbc_point;
+	
+	private String SQL ="";
+	
 	private JTextField txtWlsurl;
 	private JTextField txtConnFact;
 	private JTextField txtQueue;
 	private JTextField txtOracleurl;
-	private JTextField txtSQL;
+	private JTextField SQLTable;
 	private JTextField txtConnPool;
+	
+	
 	
 	Properties appSettings = null; 
 	
@@ -100,8 +105,10 @@ public class MainWindow {
 			txtConnFact.setText(appSettings.getProperty("ConnFact"));
 			txtQueue.setText(appSettings.getProperty("Queue"));
 			txtOracleurl.setText(appSettings.getProperty("Oracleurl"));
-			txtSQL.setText(appSettings.getProperty("SQL"));
+			SQLTable.setText(appSettings.getProperty("SQLTable"));
 			txtConnPool.setText(appSettings.getProperty("ConnPool"));
+			
+			SQL = "select * from " + appSettings.getProperty("SQLTable");
 			
 			input.close();
 			
@@ -197,7 +204,7 @@ public class MainWindow {
 				
 				try
 				{
-					textPane2.setText(textPane2.getText() + "\r\n" + String.valueOf(proxy.add(5, 6)));
+					textPane2.setText(textPane2.getText() + "\r\n" + proxy.getCount (appSettings.getProperty("ConnPool"), appSettings.getProperty("SQLTable")));
 				}
 				catch (Exception e)
 				{
@@ -297,7 +304,7 @@ public class MainWindow {
 				try
 				{
 				jdbc_point = new JDBC_Exec(appSettings.getProperty("ConnPool"),appSettings.getProperty("Wlsurl"),appSettings.getProperty("Oracleurl"), "direct");
-				table1.setModel(jdbc_point.getResultSetTableModel(appSettings.getProperty("SQL")));
+				table1.setModel(jdbc_point.getResultSetTableModel(SQL));
 				}
 				catch (Exception e)
 				{
@@ -318,7 +325,7 @@ public class MainWindow {
 				try
 				{
 				jdbc_point = new JDBC_Exec(appSettings.getProperty("ConnPool"),appSettings.getProperty("Wlsurl"),appSettings.getProperty("Oracleurl"), "connection_pool");
-				table1.setModel(jdbc_point.getResultSetTableModel(appSettings.getProperty("SQL")));
+				table1.setModel(jdbc_point.getResultSetTableModel(SQL));
 				}
 				catch (Exception e)
 				{
@@ -352,7 +359,7 @@ public class MainWindow {
 		lblOracle.setBounds(44, 149, 211, 14);
 		panel_5.add(lblOracle);
 		
-		JLabel lblSqlSelectStatemet = new JLabel("SQL Select statement");
+		JLabel lblSqlSelectStatemet = new JLabel("SQL Table");
 		lblSqlSelectStatemet.setBounds(44, 174, 195, 14);
 		panel_5.add(lblSqlSelectStatemet);
 		
@@ -384,10 +391,10 @@ public class MainWindow {
 		txtOracleurl.setBounds(276, 146, 211, 20);
 		panel_5.add(txtOracleurl);
 		
-		txtSQL = new JTextField();
-		txtSQL.setColumns(10);
-		txtSQL.setBounds(276, 171, 211, 20);
-		panel_5.add(txtSQL);
+		SQLTable = new JTextField();
+		SQLTable.setColumns(10);
+		SQLTable.setBounds(276, 171, 211, 20);
+		panel_5.add(SQLTable);
 		
 		JLabel lblWlsoracleConnectionPool = new JLabel("WLS-Oracle Connection Pool");
 		lblWlsoracleConnectionPool.setBounds(43, 199, 196, 14);
@@ -411,12 +418,13 @@ public class MainWindow {
 					appSettings.setProperty("Wlsurl", txtWlsurl.getText()); 
 					appSettings.setProperty("ConnFact",txtConnFact.getText());
 					appSettings.setProperty("Queue",txtQueue.getText());
-					appSettings.setProperty("Oracleurl",txtOracleurl.getText());
-					appSettings.setProperty("SQL",txtSQL.getText());
+					appSettings.setProperty("Oracleurl",txtOracleurl.getText());					
 					appSettings.setProperty("ConnPool",txtConnPool.getText());
+					appSettings.setProperty("SQLTable",SQLTable.getText());
 					
 					appSettings.storeToXML(output, "TechTester Settings");
 					
+					SQL = "select * from " + appSettings.getProperty("SQLTable");
 					output.close();
 					
 				} catch (Exception e1) {
