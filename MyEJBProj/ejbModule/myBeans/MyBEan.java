@@ -3,11 +3,11 @@ package myBeans;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 
-
+// HELLEJB#myBeans.MyBEanRemote
 /**
  * Session Bean implementation class MyBEan
  */
-@Stateless
+@Stateless//(mappedName="HELLEJB")  
 @LocalBean
 public class MyBEan implements MyBEanRemote {
 

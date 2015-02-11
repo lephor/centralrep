@@ -1,8 +1,8 @@
 <%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
-<%@ page import="myBeans.MyBEanRemote, javax.naming.* , java.util.Properties" %>
+<%@ page import="myejbpack.SmpRemote, javax.naming.* , java.util.Properties" %>
 
 <%!
-  private MyBEanRemote hel=null;
+  private SmpRemote hel=null;
   public void jspInit()
   {
     try
@@ -11,7 +11,7 @@
       p.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
       p.put(Context.PROVIDER_URL,"t3://192.168.1.25:7001"); //"t3://localhost:7001"
       InitialContext ctx=new InitialContext(p);
-      hel=(MyBEanRemote)ctx.lookup("java:global.MyWLSApp.MyEJBProj.MyBEan!myBeans.MyBEanRemote");
+      hel=(SmpRemote)ctx.lookup("HLLEJB#myejbpack.SmpRemote"); //java:global.MyWLSApp.MyEJBProj.MyBEan!myBeans.MyBEanRemote
     }
     catch(Exception e)
     {

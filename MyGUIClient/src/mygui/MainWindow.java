@@ -19,7 +19,7 @@ import javax.swing.JTextPane;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
-import myBeans.MyBEanRemote;
+import myejbpack.*;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -29,10 +29,7 @@ import myWebServices.*;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
 
-import java.awt.Color;
 
 import javax.swing.JOptionPane;
 
@@ -51,7 +48,7 @@ public class MainWindow {
 	private JTable table1;
 	JTextPane textPaneReceived;
 	
-	MyBEanRemote rifs;
+	SmpRemote rifs;
 	myJMSClient jmscli;
 	MyJMSListener jmslistner;
 	MyWebServiceProxy proxy;
@@ -164,7 +161,7 @@ public class MainWindow {
 				      p.put(Context.INITIAL_CONTEXT_FACTORY,"weblogic.jndi.WLInitialContextFactory");
 				      p.put(Context.PROVIDER_URL,"t3://" + appSettings.getProperty("Wlsurl")); //"t3://192.168.1.25:7001" "t3://localhost:7001"
 				      InitialContext ctx=new InitialContext(p);
-				      rifs=(MyBEanRemote)ctx.lookup("java:global.MyWLSApp.MyEJBProj.MyBEan!myBeans.MyBEanRemote");
+				      rifs=(SmpRemote)ctx.lookup("HLLEJB#myejbpack.SmpRemote");
 				      textPane1.setText(textPane1.getText() + "\r\n" + rifs.Hello("ejb client"));
 				    }
 				    catch(Exception e)
