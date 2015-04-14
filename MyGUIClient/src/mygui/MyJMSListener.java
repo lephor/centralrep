@@ -41,7 +41,7 @@ public class MyJMSListener implements MessageListener {
 
 		init(ic, QUEUE);
 		
-		synchronized(this)
+		synchronized(txtpane) //synchronized(this)
 		{
 			txtpane.setText(txtpane.getText() +  "\r\n" + "JMS listens to incoming Messages ... ");
 		}
@@ -66,7 +66,7 @@ public class MyJMSListener implements MessageListener {
 	msgText = msg.toString();
 	}
 	
-	synchronized(this)
+	synchronized(txtpane) // 
 	{
 		txtpane.setText(txtpane.getText() + "\r\n" + msgText);
 	}
